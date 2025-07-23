@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meet Street - Zapatería Online</title>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    /* Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #121212;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    p.subtitle {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #bbb;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    nav button {
+      background-color: #fff;
+      color: #121212;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 2px 8px rgb(255 255 255 / 0.15);
+      user-select: none;
+    }
+
+    nav button:hover {
+      background-color: #eee;
+    }
+
+    #contact-btn {
+      background-color: #ff5722;
+      color: white;
+      box-shadow: 0 3px 12px rgb(255 87 34 / 0.7);
+    }
+
+    #contact-btn:hover {
+      background-color: #e64a19;
+    }
+
+    #buscador {
+      display: block;
+      margin: 0 auto 30px auto;
+      max-width: 400px;
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 1rem;
+      border-radius: 30px;
+      border: none;
+      outline: none;
+      transition: box-shadow 0.3s ease;
+      color: #121212;
+    }
+    #buscador:focus {
+      box-shadow: 0 0 8px #ff5722;
+    }
+
+    #productos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+      gap: 25px;
+    }
+
+    .producto {
+      background-color: #1f1f1f;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(255,255,255,0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .producto:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(255,87,34,0.3);
+    }
+    .producto img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-bottom: 2px solid #ff5722;
+    }
+    .producto-content {
+      flex-grow: 1;
+      padding: 15px;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .producto-content h3 {
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ff5722;
+      text-shadow: 0 0 5px #ff5722;
+    }
+    .producto-content p {
+      font-size: 0.9rem;
+      flex-grow: 1;
+      color: #ccc;
+      margin-bottom: 12px;
+    }
+    .precio {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
+      text-align: center;
+    }
+    select {
+      margin-bottom: 10px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+      cursor: pointer;
+      user-select: none;
+      color: #121212;
+    }
+    .btn-carrito {
+      background-color: #ff5722;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 0;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      width: 100%;
+    }
+    .btn-carrito:hover {
+      background-color: #e64a19;
+    }
+
+    .carrito-icono {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ff5722;
+      color: white;
+      border-radius: 50%;
+      width: 52px;
+      height: 52px;
+      box-shadow: 0 4px 12px rgba(255, 87, 34, 0.8);
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    .carrito-icono:hover {
+      background-color: #e64a19;
+    }
+    .carrito-contador {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #fff;
+      color: #ff5722;
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 5px #fff;
+      pointer-events: none;
+    }
+
+    #carrito {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background-color: #1e1e1e;
+      border-radius: 15px;
+      width: 350px;
+      max-height: 500px;
+      padding: 15px;
+      box-shadow: 0 8px 24px rgba(255, 87, 34, 0.7);
+      overflow-y: auto;
+      color: #eee;
+      display: none;
+      z-index: 1100;
+      user-select: none;
+    }
+    #carrito.visible {
+      display: block;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    #carrito h3 {
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #ff5722;
+      text-align: center;
+      text-shadow: 0 0 8px #ff5722;
+      position: relative;
+    }
+    #carrito .cerrar-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 28px;
+      font-weight: 900;
+      color: #ff5722;
+      cursor: pointer;
+      line-height: 1;
+      user-select: none;
+    }
+    #carrito .carrito-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 5px;
+      border-bottom: 1px solid #333;
+      font-size: 0.9rem;
+    }
+    #carrito .carrito-item:last-child {
+      border-bottom: none;
+    }
+    #carrito .item-info {
+      flex: 1;
+      color: #ddd;
+      max-width: 180px;
+    }
+    #carrito .item-cantidad {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #carrito .item-cantidad button {
+      background-color: #ff5722;
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    #carrito .item-cantidad button:hover {
+      background-color: #e64a19;
+    }
+    #carrito .item-precio {
+      width: 60px;
+      text-align: right;
+      font-weight: 700;
+      color: #ffb997;
+      user-select: none;
+    }
+    #carrito #total-carrito {
+      text-align: right;
+      font-weight: 900;
+      font-size: 1.3rem;
+      margin-top: 15px;
+      color: #ff5722;
+      text-shadow: 0 0 8px #ff5722;
+      user-select: none;
+    }
+    #carrito #vaciar-carrito-btn,
+    #carrito #comprar-carrito-btn {
+      background-color: #ff5722;
+      border: none;
+      color: white;
+      font-weight: 700;
+      border-radius: 30px;
+      padding: 10px 0;
+      width: 100%;
+      margin-top: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    #carrito #vaciar-carrito-btn:hover,
+    #carrito #comprar-carrito-btn:hover {
+      background-color: #e64a19;
+    }
+
+    #modal-exito {
+      position: fixed;
+      top: 0; left: 0; right:0; bottom:0;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1500;
+      user-select: none;
+    }
+    #modal-exito.visible {
+      display: flex;
+      animation: fadeIn 0.3s ease forwards;
+    }
+    #modal-exito .contenido {
+      background: #1f1f1f;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #ff5722;
+      color: #fff;
+      text-align: center;
+      max-width: 400px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      user-select: none;
+    }
+    #modal-exito .contenido button {
+      margin-top: 20px;
+      background-color: #ff5722;
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 10px 25px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    #modal-exito .contenido button:hover {
+      background-color: #e64a19;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>MEET STREET</h1>
+  <p class="subtitle">Encuentra Tu Estilo De Calle</p>
+
+  <nav>
+    <button onclick="filtrarCategoria('')">Inicio</button>
+    <button onclick="filtrarCategoria('urbano')">Urbanos</button>
+    <button onclick="filtrarCategoria('deportivo')">Deportivos</button>
+    <button id="contact-btn" onclick="mostrarContacto()">Contáctanos</button>
+  </nav>
+
+  <input
+    type="text"
+    id="buscador"
+    placeholder="Buscar zapatos..."
+    aria-label="Buscar productos"
+  />
+
+  <div id="productos"></div>
+
+  <div class="carrito-icono" aria-label="Abrir carrito" role="button" tabindex="0" onclick="toggleCarrito()">
+    <i class="fas fa-shopping-cart fa-lg"></i>
+    <div id="contador-carrito" class="carrito-contador" aria-live="polite" aria-atomic="true">0</div>
+  </div>
+
+  <section id="carrito" aria-label="Carrito de compras" role="region">
+    <h3>
+      Carrito
+      <button
+        class="cerrar-btn"
+        aria-label="Cerrar carrito"
+        onclick="toggleCarrito()"
+      >
+        &times;
+      </button>
+    </h3>
+    <div id="lista-carrito"></div>
+    <p id="total-carrito">Total: Q.0.00</p>
+    <button id="vaciar-carrito-btn" aria-label="Vaciar carrito">Vaciar carrito</button>
+    <button id="comprar-carrito-btn" aria-label="Comprar carrito">Comprar</button>
+  </section>
+
+  <div id="modal-exito" role="alertdialog" aria-modal="true" aria-labelledby="exito-titulo">
+    <div class="contenido">
+      <h3 id="exito-titulo">¡Compra Exitosa!</h3>
+      <p>Gracias por tu compra, tu pedido será procesado pronto.</p>
+      <button onclick="cerrarExito()">Cerrar</button>
+    </div>
+  </div>
+
+  <script>
+    const productosData = [
+      {
+        nombre: 'Travis Scott x Fragment',
+        precio: 1650.0,
+        categoria: 'urbano',
+        descripcion: 'Ideal para el uso diario. Comodidad y estilo urbano.',
+        imagenes: ['Travis.jpeg', 'Travis2.jpeg'],
+        tallas: ['39', '40', '41'],
+        colores: ['Negro', 'Azul'],
+      },
+      {
+        nombre: 'Travis Scott Velvet Brown',
+        precio: 1230.0,
+        categoria: 'urbano',
+        descripcion: 'Elegante, resistente al agua. Perfecta.',
+        imagenes: ['Velvet Brown.jpeg', 'VelvetBrown2.jpeg'],
+        tallas: ['38', '39', '40'],
+        colores: ['Marrón', 'Negro'],
+      },
+      {
+        nombre: 'Nike Kyrie Irving',
+        precio: 1150.0,
+        categoria: 'deportivo',
+        descripcion: 'Diseño ergonómico para un estilo activo del deporte.',
+        imagenes: ['Nike Kyrie Irving.jpeg', 'Kyrie2.jpeg'],
+        tallas: ['38', '39', '40'],
+        colores: ['Rojo', 'Negro'],
+      },
+      {
+        nombre: 'Phantom Triple Black',
+        precio: 150.0,
+        categoria: 'urbano',
+        descripcion: 'Diseño ergonómico para un estilo activo del deporte.',
+        imagenes: ['Phantom Triple Black.jpeg'],
+        tallas: ['40', '41', '42'],
+        colores: ['Negro'],
+      },
+      {
+        nombre: 'Lamelo Ball',
+        precio: 150.0,
+        categoria: 'deportivo',
+        descripcion: 'Diseño ergonómico para un estilo activo del deporte.',
+        imagenes: ['Lamelo ball.jpeg'],
+        tallas: ['38', '39', '40'],
+        colores: ['Blanco', 'Negro'],
+      },
+      {
+        nombre: 'Lamelo Ball 01',
+        precio: 1500.0,
+        categoria: 'deportivo',
+        descripcion: 'Diseño ergonómico para un estilo activo del deporte.',
+        imagenes: ['Lamelo ball 01.jpeg'],
+        tallas: ['38', '39', '40'],
+        colores: ['Blanco', 'Azul'],
+      },
+      {
+        nombre: 'Nike Dunk Panda',
+        precio: 150.0,
+        categoria: 'urbano',
+        descripcion: 'Diseño ergonómico para un estilo activo del deporte.',
+        imagenes: ['Nike Dunk Panda.jpeg'],
+        tallas: ['40', '41', '42'],
+        colores: ['Blanco', 'Negro'],
+      },
+    ];
+
+    const productosContenedor = document.getElementById('productos');
+    const buscador = document.getElementById('buscador');
+    const carritoIcono = document.querySelector('.carrito-icono');
+    const carrito = document.getElementById('carrito');
+    const listaCarrito = document.getElementById('lista-carrito');
+    const totalCarrito = document.getElementById('total-carrito');
+    const contadorCarrito = document.getElementById('contador-carrito');
+    const vaciarBtn = document.getElementById('vaciar-carrito-btn');
+    const comprarBtn = document.getElementById('comprar-carrito-btn');
+    const modalExito = document.getElementById('modal-exito');
+
+    // Carrito array
+    let carritoItems = JSON.parse(localStorage.getItem('carritoItems')) || [];
+
+    // Mostrar productos con selección tallas y colores
+    function mostrarProductos(productos) {
+      productosContenedor.innerHTML = '';
+      if (productos.length === 0) {
+        productosContenedor.innerHTML = `<p style="text-align:center; color:#ff5722; font-weight:700;">No se encontraron productos.</p>`;
+        return;
+      }
+
+      productos.forEach((prod, i) => {
+        const div = document.createElement('article');
+        div.classList.add('producto');
+        div.setAttribute('tabindex', '0');
+        div.setAttribute('role', 'article');
+        div.setAttribute('aria-label', `Producto: ${prod.nombre}, Precio: Q.${prod.precio.toFixed(2)}`);
+
+        // Crear selects para tallas y colores
+        const tallaOptions = prod.tallas
+          .map(t => `<option value="${t}">${t}</option>`)
+          .join('');
+        const colorOptions = prod.colores
+          .map(c => `<option value="${c}">${c}</option>`)
+          .join('');
+
+        div.innerHTML = `
+          <img src="${prod.imagenes[0]}" alt="Imagen de ${prod.nombre}" loading="lazy" />
+          <div class="producto-content">
+            <h3>${prod.nombre}</h3>
+            <p>${prod.descripcion}</p>
+            <div class="precio">Q.${prod.precio.toFixed(2)}</div>
+            <label for="talla-${i}" class="sr-only">Seleccionar talla</label>
+            <select id="talla-${i}" aria-label="Seleccionar talla">
+              ${tallaOptions}
+            </select>
+            <label for="color-${i}" class="sr-only">Seleccionar color</label>
+            <select id="color-${i}" aria-label="Seleccionar color">
+              ${colorOptions}
+            </select>
+            <button class="btn-carrito" aria-label="Agregar ${prod.nombre} al carrito">Agregar al carrito</button>
+          </div>
+        `;
+
+        // Evento para agregar producto con talla y color seleccionados
+        div.querySelector('.btn-carrito').addEventListener('click', () => {
+          const tallaSelect = div.querySelector(`#talla-${i}`);
+          const colorSelect = div.querySelector(`#color-${i}`);
+          const talla = tallaSelect.value;
+          const color = colorSelect.value;
+          agregarAlCarrito(prod, talla, color);
+          mostrarMensaje(`${prod.nombre} (${talla}, ${color}) agregado al carrito`);
+        });
+
+        productosContenedor.appendChild(div);
+      });
+    }
+
+    // Filtrar por categoría
+    function filtrarCategoria(categoria) {
+      const productosFiltrados = categoria
+        ? productosData.filter((p) => p.categoria === categoria)
+        : productosData;
+      mostrarProductos(productosFiltrados);
+    }
+
+    // Buscador
+    buscador.addEventListener('input', () => {
+      const texto = buscador.value.trim().toLowerCase();
+      if (!texto) {
+        filtrarCategoria('');
+        return;
+      }
+      const filtrados = productosData.filter((p) =>
+        p.nombre.toLowerCase().includes(texto) ||
+        p.descripcion.toLowerCase().includes(texto)
+      );
+      mostrarProductos(filtrados);
+    });
+
+    // Agregar al carrito con talla y color seleccionados
+    function agregarAlCarrito(producto, talla, color) {
+      const item = {
+        nombre: producto.nombre,
+        precio: producto.precio,
+        talla,
+        color,
+        cantidad: 1,
+      };
+
+      // Buscar si ya existe el mismo producto con talla y color
+      const index = carritoItems.findIndex(
+        (ci) => ci.nombre === item.nombre && ci.talla === item.talla && ci.color === item.color
+      );
+      if (index !== -1) {
+        carritoItems[index].cantidad++;
+      } else {
+        carritoItems.push(item);
+      }
+      guardarCarrito();
+      actualizarCarrito();
+      mostrarCarrito();
+    }
+
+    // Actualizar carrito visual
+    function actualizarCarrito() {
+      listaCarrito.innerHTML = '';
+      let total = 0;
+      let cantidadTotal = 0;
+
+      if (carritoItems.length === 0) {
+        listaCarrito.innerHTML = '<p style="text-align:center; color:#ff5722;">El carrito está vacío.</p>';
+        totalCarrito.textContent = 'Total: Q.0.00';
+        contadorCarrito.textContent = '0';
+        return;
+      }
+
+      carritoItems.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.classList.add('carrito-item');
+
+        div.innerHTML = `
+          <div class="item-info">${item.nombre} - Talla ${item.talla} - ${item.color}</div>
+          <div class="item-cantidad" aria-label="Cantidad del producto">
+            <button aria-label="Disminuir cantidad" class="restar">−</button>
+            <span>${item.cantidad}</span>
+            <button aria-label="Aumentar cantidad" class="sumar">+</button>
+          </div>
+          <div class="item-precio">Q.${(item.precio * item.cantidad).toFixed(2)}</div>
+        `;
+
+        // Restar cantidad
+        div.querySelector('.restar').addEventListener('click', () => {
+          if (item.cantidad > 1) {
+            item.cantidad--;
+          } else {
+            carritoItems.splice(index, 1);
+          }
+          guardarCarrito();
+          actualizarCarrito();
+        });
+
+        // Sumar cantidad
+        div.querySelector('.sumar').addEventListener('click', () => {
+          item.cantidad++;
+          guardarCarrito();
+          actualizarCarrito();
+        });
+
+        listaCarrito.appendChild(div);
+        total += item.precio * item.cantidad;
+        cantidadTotal += item.cantidad;
+      });
+
+      totalCarrito.textContent = `Total: Q.${total.toFixed(2)}`;
+      contadorCarrito.textContent = cantidadTotal;
+    }
+
+    // Guardar carrito en localStorage
+    function guardarCarrito() {
+      localStorage.setItem('carritoItems', JSON.stringify(carritoItems));
+    }
+
+    // Mostrar/Ocultar carrito
+    function toggleCarrito() {
+      carrito.classList.toggle('visible');
+    }
+    function mostrarCarrito() {
+      carrito.classList.add('visible');
+    }
+
+    // Vaciar carrito
+    vaciarBtn.addEventListener('click', () => {
+      if (carritoItems.length === 0) {
+        mostrarMensaje('El carrito ya está vacío');
+        return;
+      }
+      if (confirm('¿Quieres vaciar todo el carrito?')) {
+        carritoItems = [];
+        guardarCarrito();
+        actualizarCarrito();
+        mostrarMensaje('Carrito vaciado');
+      }
+    });
+
+    // Comprar carrito (simulado)
+    comprarBtn.addEventListener('click', () => {
+      if (carritoItems.length === 0) {
+        mostrarMensaje('El carrito está vacío');
+        return;
+      }
+      mostrarExito();
+    });
+
+    // Mensajes temporales personalizados
+    let mensajeTimeout;
+    function mostrarMensaje(texto) {
+      clearTimeout(mensajeTimeout);
+      const mensajeDiv = document.createElement('div');
+      mensajeDiv.textContent = texto;
+      mensajeDiv.style.position = 'fixed';
+      mensajeDiv.style.bottom = '20px';
+      mensajeDiv.style.left = '50%';
+      mensajeDiv.style.transform = 'translateX(-50%)';
+      mensajeDiv.style.backgroundColor = '#ff5722';
+      mensajeDiv.style.color = '#fff';
+      mensajeDiv.style.padding = '12px 25px';
+      mensajeDiv.style.borderRadius = '30px';
+      mensajeDiv.style.fontWeight = '700';
+      mensajeDiv.style.boxShadow = '0 4px 12px rgba(255,87,34,0.8)';
+      mensajeDiv.style.zIndex = '2000';
+      mensajeDiv.style.userSelect = 'none';
+      mensajeDiv.style.animation = 'fadeIn 0.4s ease';
+
+      document.body.appendChild(mensajeDiv);
+
+      mensajeTimeout = setTimeout(() => {
+        mensajeDiv.style.opacity = '0';
+        setTimeout(() => {
+          mensajeDiv.remove();
+        }, 400);
+      }, 2500);
+    }
+
+    // Modal compra exitosa
+    function mostrarExito() {
+      modalExito.classList.add('visible');
+    }
+    function cerrarExito() {
+      modalExito.classList.remove('visible');
+      carritoItems = [];
+      guardarCarrito();
+      actualizarCarrito();
+      toggleCarrito();
+      mostrarMensaje('Gracias por tu compra');
+    }
+
+    // Inicializar mostrando todos
+    filtrarCategoria('');
+
+    // Placeholder contacto
+    function mostrarContacto() {
+      alert('¡Gracias por querer contactarnos! Pronto implementaremos un formulario.');
+    }
+  </script>
+</body>
+</html>
+
